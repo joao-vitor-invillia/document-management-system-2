@@ -20,6 +20,13 @@ const upload = multer({
     fileSize: Number(process.env.MAX_FILE_SIZE) || 10 * 1024 * 1024,
     files: 1,
   },
+  fileFilter: (_request, file, callback) => {
+    if (!documentRepository.isAllowedFileType(file)) {
+      return callback(new Error('FILE_TYPE_NOT_ALLOWED'));
+    }
+
+    callback(null, true);
+  },
 });
 
 const router = express.Router();
