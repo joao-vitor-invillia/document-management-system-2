@@ -47,6 +47,24 @@ app.use((error, req, res, next) => {
     });
   }
 
+  if (error && error.message === 'FILE_TYPE_NOT_ALLOWED') {
+    return res.status(415).json({
+      error: {
+        code: 'INVALID_FILE_TYPE',
+        message: 'Tipo de arquivo não permitido. Use PDF, DOC, DOCX, TXT, PNG, JPG, JPEG ou GIF.',
+      },
+    });
+  }
+
+  if (error && error.message && /fora do diretório|invalido para upload|arquivo/i.test(error.message)) {
+    return res.status(400).json({
+      error: {
+        code: 'INVALID_FILE',
+        message: error.message,
+      },
+    });
+  }
+
   return next(error);
 });
 
